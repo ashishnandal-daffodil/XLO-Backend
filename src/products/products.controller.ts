@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -17,18 +18,20 @@ export class ProductsController {
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
+    console.log('create');
     return this.productsService.create(createProductDto);
   }
 
   @Get('allProduct')
-  findAll() {
-    console.log('111');
-    return this.productsService.findAll();
+  async findAll(@Query() { skip, limit }) {
+    console.log('findAll');
+    return this.productsService.findAll(skip, limit);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    console.log('findOne');
+    // return this.productsService.findOne(+id);
   }
 
   @Patch(':id')

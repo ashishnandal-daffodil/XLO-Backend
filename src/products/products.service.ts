@@ -1,15 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
+import { Product as Product_Entity } from './entities/product.entity';
+import { Model, model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { NotFoundException } from '@nestjs/common';
+import {
+  Product as Product_Def,
+  ProductDocument,
+} from '../schemas/product.schema';
 
 @Injectable()
 export class ProductsService {
-  private products: Product[] = [
+  constructor(
+    @InjectModel(Product_Def.name) private productModel: Model<ProductDocument>,
+  ) {}
+
+  private products: Product_Entity[] = [
     {
       id: 1,
-      title: 'i20 Magna',
-      price: 570000,
+      title: 'i10 Magna',
+      price: 10000,
       description: 'Car for Sale',
       category: 'Car',
       purchased_on: new Date('23 Aug 2019'),
@@ -23,24 +34,95 @@ export class ProductsService {
       expire_on: new Date('2 Oct 2022'),
       closed_on: null,
     },
+    {
+      id: 2,
+      title: 'i20 Magna',
+      price: 20000,
+      description: 'Car for Sale',
+      category: 'Car',
+      purchased_on: new Date('25 Aug 2020'),
+      owner: 1,
+      photos: [],
+      thumbnail_url: '',
+      thumbnail_uploaded: false,
+      active: true,
+      created_on: new Date('20 Oct 2021'),
+      updated_on: null,
+      expire_on: new Date('21 Nov 2022'),
+      closed_on: null,
+    },
+    {
+      id: 3,
+      title: 'i30 Magna',
+      price: 30000,
+      description: 'Car for Sale',
+      category: 'Car',
+      purchased_on: new Date('25 Aug 2020'),
+      owner: 1,
+      photos: [],
+      thumbnail_url: '',
+      thumbnail_uploaded: false,
+      active: true,
+      created_on: new Date('20 Oct 2021'),
+      updated_on: null,
+      expire_on: new Date('21 Nov 2022'),
+      closed_on: null,
+    },
+    {
+      id: 4,
+      title: 'i40 Magna',
+      price: 400000,
+      description: 'Car for Sale',
+      category: 'Car',
+      purchased_on: new Date('25 Aug 2020'),
+      owner: 1,
+      photos: [],
+      thumbnail_url: '',
+      thumbnail_uploaded: false,
+      active: true,
+      created_on: new Date('20 Oct 2021'),
+      updated_on: null,
+      expire_on: new Date('21 Nov 2022'),
+      closed_on: null,
+    },
+    {
+      id: 5,
+      title: 'i50 Magna',
+      price: 500000,
+      description: 'Car for Sale',
+      category: 'Car',
+      purchased_on: new Date('25 Aug 2020'),
+      owner: 1,
+      photos: [],
+      thumbnail_url: '',
+      thumbnail_uploaded: false,
+      active: true,
+      created_on: new Date('20 Oct 2021'),
+      updated_on: null,
+      expire_on: new Date('21 Nov 2022'),
+      closed_on: null,
+    },
   ];
-  private idSeq = 0;
 
-  create(createProductDto: CreateProductDto) {
-    this.products.push({
-      ...createProductDto,
-      id: this.idSeq++,
-    });
-    return this.products.at(-1);
+  async create(ProductData) {
+    return this.productModel.insertMany(ProductData);
   }
 
-  findAll(): Product[] {
-    console.log('findAlll');
-    return this.products;
+  async findAll(skip = 0, limit: number) {
+    const query = this.productModel.find().sort({ id: 1 }).skip(skip);
+
+    if (limit) {
+      query.limit(limit);
+    }
+    return query;
   }
 
-  findOne(id: number): Product {
-    return this.products.find((product) => product.id === id);
+  async findOne(id: number) {
+    const product = await this.productModel.findById(id);
+    if (!product) {
+      throw new NotFoundException();
+    }
+    return product;
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
