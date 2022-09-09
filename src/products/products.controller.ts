@@ -24,7 +24,7 @@ export class ProductsController {
 
   @Get('allProduct')
   async findAll(@Query() { skip, limit }) {
-    console.log('findAll');
+    console.log('findAll', skip, limit);
     return this.productsService.findAll(skip, limit);
   }
 

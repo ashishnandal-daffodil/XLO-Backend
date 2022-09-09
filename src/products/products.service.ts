@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product as Product_Entity } from './entities/product.entity';
-import { Model, model } from 'mongoose';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { NotFoundException } from '@nestjs/common';
 import {
@@ -109,7 +109,11 @@ export class ProductsService {
   }
 
   async findAll(skip = 0, limit: number) {
-    const query = this.productModel.find().sort({ id: 1 }).skip(skip);
+    const query = this.productModel
+      .find()
+      // .select({ id: 1, title: 1 })
+      .sort({ id: 1 })
+      .skip(skip);
 
     if (limit) {
       query.limit(limit);
