@@ -1,12 +1,28 @@
-import { Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Patch,
+  Post,
+  UseGuards,
+  Request,
+  Body,
+} from '@nestjs/common';
 import { LocalAuthGuard } from 'src/auth/local-auth.guards';
+import { UserDto } from './dto/user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
   // POST /login
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Request() req): any {
     return req.user;
+  }
+
+  @Patch('update')
+  update(@Body() updateUserData: UserDto) {
+    return this.usersService.update(updateUserData);
   }
 }

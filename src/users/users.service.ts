@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User as User_Def, UserDocument } from 'src/schemas/user.schema';
@@ -41,5 +41,19 @@ export class UsersService {
     };
     let user = await this.userModel.insertMany(insertData);
     return user && user[0];
+  }
+
+  async update(params: any) {
+    let { _id: userId, changes } = params || {};
+
+    const post = await this.userModel.findByIdAndUpdate(
+      { _id: userId },
+      changes,
+      { new: true },
+    );
+    if (!post) {
+      throw new NotFoundException();
+    }
+    return post;
   }
 }
