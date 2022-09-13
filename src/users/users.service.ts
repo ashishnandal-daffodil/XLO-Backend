@@ -10,8 +10,17 @@ export class UsersService {
     @InjectModel(User_Def.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async findOne(email: string) {
-    let user = await this.userModel.findOne({ email: email });
+  async findOne(param: any) {
+    let filter = {};
+    if (param && param.email) {
+      filter['email'] = param.email;
+    }
+    if (param && param.mobile) {
+      filter['mobile'] = param.mobile;
+    }
+
+    let user = await this.userModel.findOne(filter);
+
     return user;
   }
 

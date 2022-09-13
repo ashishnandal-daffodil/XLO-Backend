@@ -6,16 +6,20 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async validateUser(email: string, password: string) {
-    const user: any = await this.usersService.findOne(email);
+  async validateUser(phone: string, email: string, password: string) {
+    let param = email ? { email: email } : { mobile: phone };
+    const user: any = await this.usersService.findOne(param);
 
     if (user && (await bcrypt.compare(password, user.password))) {
       let { _id, name } = user || {};
-      
+
       return { user: { _id, name }, message: 'Old User' };
     } else if (!user) {
       // create new user
-      const user: any = await this.usersService.create({ email, password });
+      const user: any = await this.usersService.create({
+        ...param,
+        password,
+      });
       let { _id, name } = user || {};
       return { user: { _id, name }, message: 'New User' };
     }
