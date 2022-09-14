@@ -1,12 +1,12 @@
 import {
   Controller,
-  Patch,
   Post,
   UseGuards,
   Request,
   Body,
   Get,
   Query,
+  Put,
 } from '@nestjs/common';
 import { LocalAuthGuard } from 'src/auth/local-auth.guards';
 import { UserDto } from './dto/user.dto';
@@ -28,7 +28,7 @@ export class UsersController {
     return this.usersService.getByToken(token);
   }
 
-  @Patch('update')
+  @Put('update')
   update(@Body() updateUserData: UserDto) {
     return this.usersService.update(updateUserData);
   }

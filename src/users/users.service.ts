@@ -57,15 +57,15 @@ export class UsersService {
 
     changes = { ...changes, updated_on: new Date() };
 
-    const post = await this.userModel.findByIdAndUpdate(
+    const user = await this.userModel.findByIdAndUpdate(
       { _id: userId },
       changes,
       { new: true },
     );
-    if (!post) {
+    if (!user) {
       throw new NotFoundException();
     }
-    return post;
+    return user;
   }
 
   async getByToken(token) {
