@@ -14,13 +14,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     let email = req && req.body && req.body.email;
     let password = req && req.body && req.body.password;
 
-    const { user, message } =
+    const { user, message, token } =
       (await this.authService.validateUser(phone, email, password)) || {};
 
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    return { user, message };
+    return { user, message, token };
   }
 }

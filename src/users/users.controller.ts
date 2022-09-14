@@ -5,6 +5,8 @@ import {
   UseGuards,
   Request,
   Body,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { LocalAuthGuard } from 'src/auth/local-auth.guards';
 import { UserDto } from './dto/user.dto';
@@ -19,6 +21,11 @@ export class UsersController {
   @Post('login')
   login(@Request() req): any {
     return req.user;
+  }
+
+  @Get('getbytoken')
+  getUser(@Query() { token }) {
+    return this.usersService.getByToken(token);
   }
 
   @Patch('update')
