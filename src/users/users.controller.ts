@@ -32,4 +32,8 @@ export class UsersController {
   update(@Body() updateUserData: UserDto) {
     return this.usersService.update(updateUserData);
   }
+  @Post('logout')
+  logout(@Body() { token }) {
+    return this.usersService.logout({ token });
+  }
 }

@@ -105,4 +105,10 @@ export class UsersService {
     };
     await this.userConnectionModel.insertMany(insertData);
   }
+
+  async logout(params) {
+    if (params && params.token) {
+      await this.userConnectionModel.deleteOne({ token: params.token });
+    }
+  }
 }
