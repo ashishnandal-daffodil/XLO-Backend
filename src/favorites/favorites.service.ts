@@ -30,4 +30,9 @@ export class FavoritesService {
       );
     }
   }
+
+  async findAll(userId) {
+    const query = this.favoriteModel.find({ user: userId }).sort({ id: 1 });
+    return query;
+  }
 }

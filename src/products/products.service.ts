@@ -112,7 +112,7 @@ export class ProductsService {
     const query = this.productModel
       .find()
       // .select({ id: 1, title: 1 })
-      .sort({ id: 1 })
+      .sort({ _id: 1 })
       .skip(skip);
 
     if (limit) {
