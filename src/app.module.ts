@@ -6,9 +6,10 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { FavoritesModule } from './favorites/favorites.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [ProductsModule, MongooseModule.forRoot("mongodb://localhost/nest"), UsersModule, AuthModule, FavoritesModule],
+  imports: [ProductsModule, MongooseModule.forRoot("mongodb://localhost/nest"), UsersModule, AuthModule, FavoritesModule, ChatModule],
   controllers: [AppController],
   providers: [AppService]
 })
