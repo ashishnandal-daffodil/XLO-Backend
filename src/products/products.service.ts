@@ -121,7 +121,7 @@ export class ProductsService {
     return query;
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const product = await this.productModel.findById(id);
     if (!product) {
       throw new NotFoundException();

@@ -24,14 +24,14 @@ export class ProductsController {
 
   @Get('allProduct')
   async findAll(@Query() { skip, limit }) {
-    console.log('findAll', skip, limit);
+    // console.log('findAll', skip, limit);
     return this.productsService.findAll(skip, limit);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
     console.log('findOne');
-    // return this.productsService.findOne(+id);
+    return this.productsService.findOne(id);
   }
 
   @Patch(':id')
