@@ -34,15 +34,14 @@ export class UsersService {
   }
 
   async create(userData) {
-    let { password } = userData || {};
+    let { password ,username,phone} = userData || {};
 
     const saltOrRounds = 10;
     const enc_pass = await bcrypt.hash(password, saltOrRounds);
 
     let insertData = {
-      mobile: '',
-      email: '',
-      name: '',
+      name: username,
+      mobile:phone,
       created_on: new Date(),
       updated_on: new Date(),
       ...userData,
