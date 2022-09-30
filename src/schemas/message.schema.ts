@@ -12,9 +12,6 @@ export class Message {
   sender: string;
 
   @Prop()
-  receiver: string;
-
-  @Prop()
   created_on: Date;
 
   @Prop()

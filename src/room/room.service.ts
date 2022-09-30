@@ -24,7 +24,18 @@ export class RoomService {
   }
 
   async getChatForRoom(roomId: number, user: User) {
-    const query = this.roomModel.findById({ "_id": roomId }, {"messages": 1});
+    const query = this.roomModel.findById(roomId, { "messages": 1 });
+    return query;
+  }
+
+  async sendMessage(message: string, roomId: number, user: User) {
+    let messageObj = {
+      message: message,
+      sender: user["_id"],
+      created_on: new Date(),
+      updated_on: new Date()
+    };
+    const query = this.roomModel.findByIdAndUpdate(roomId, { $push: { messages: messageObj }, $set: {latest_message: messageObj} });
     return query;
   }
 }

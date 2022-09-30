@@ -20,6 +20,9 @@ export class Room {
     messages: Message[];
 
     @Prop()
+    latest_message: Message;
+
+    @Prop()
     created_at: Date;
 
     @Prop()

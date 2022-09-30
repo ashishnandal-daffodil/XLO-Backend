@@ -58,7 +58,6 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException();
     }
-    console.log("🚀 ~ file: users.service.ts ~ line 63 ~ UsersService ~ update ~ user", user)
     return user;
   }
 

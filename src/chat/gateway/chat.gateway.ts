@@ -25,10 +25,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return this.disconnect(socket);
       } else {
         socket.data.user = user;
-        console.log("🚀 ~ file: chat.gateway.ts ~ line 24 ~ ChatGateway ~ handleConnection ~ user._id", user._id);
-        const rooms = await this.roomService.getRoomsForUser(user._id);
-        // Only emit rooms to the specific connected client
-        return this.server.to(socket.id).emit("rooms", rooms);
+        return this.onGetMyRooms(socket);
       }
     } catch {
       return this.disconnect(socket);
@@ -49,9 +46,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return this.roomService.createRoom(room, socket.data.user);
   }
 
+  @SubscribeMessage("getMyRooms")
+  async onGetMyRooms(socket: Socket): Promise<any> {
+    const rooms = await this.roomService.getRoomsForUser(socket.data.user._id);
+    // Only emit rooms to the specific connected client
+    return this.server.to(socket.id).emit("rooms", rooms);
+  }
+
   @SubscribeMessage("getChatForRoom")
   async onGetChatForRoom(socket: Socket, roomId: number): Promise<any> {
     const messages = await this.roomService.getChatForRoom(roomId, socket.data.user);
     return this.server.to(socket.id).emit("messages", messages);
+  }
+
+  @SubscribeMessage("sendMessage")
+  async onSendMessage(socket, data): Promise<any> {
+    let message = data.message;
+    let roomId = data.roomId;
+    await this.roomService.sendMessage(message, roomId, socket.data.user);
+    const messages = await this.roomService.getChatForRoom(roomId, socket.data.user);
+    await this.server.to(socket.id).emit("messages", messages);
+    return this.onGetMyRooms(socket);
   }
 }

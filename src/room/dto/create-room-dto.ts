@@ -7,6 +7,7 @@ export class CreateRoomDto {
     description: string;
     users: User[];
     messages: Message[];
+    latest_message: Message;
     created_at: Date;
     updated_at: Date;
   }
