@@ -14,19 +14,19 @@ export class UsersService {
   constructor(
     @InjectModel(User_Def.name) private userModel: Model<UserDocument>,
     @InjectModel(UserConnection_Def.name)
-    private userConnectionModel: Model<UserConnectionDocument>,
+    private userConnectionModel: Model<UserConnectionDocument>
   ) {}
 
   async findOne(param: any) {
     const filter = {};
     if (param && param.email) {
-      filter['email'] = param.email;
+      filter["email"] = param.email;
     }
     if (param && param.mobile) {
-      filter['mobile'] = param.mobile;
+      filter["mobile"] = param.mobile;
     }
     if (param && param._id) {
-      filter['_id'] = param._id;
+      filter["_id"] = param._id;
     }
 
     const user = await this.userModel.findOne(filter);
@@ -47,7 +47,7 @@ export class UsersService {
       created_on: new Date(),
       updated_on: new Date(),
       ...userData,
-      password: enc_pass,
+      password: enc_pass
     };
     const user = await this.userModel.insertMany(insertData);
     return user && user[0];
@@ -58,11 +58,7 @@ export class UsersService {
 
     changes = { ...changes, updated_on: new Date() };
 
-    const user = await this.userModel.findByIdAndUpdate(
-      { _id: userId },
-      changes,
-      { new: true },
-    );
+    const user = await this.userModel.findByIdAndUpdate({ _id: userId }, changes, { new: true });
     if (!user) {
       throw new NotFoundException();
     }
@@ -84,7 +80,7 @@ export class UsersService {
   async findUserConnection(param: any) {
     const filter = {};
     if (param && param.token) {
-      filter['token'] = param.token;
+      filter["token"] = param.token;
     } else {
       return;
     }
@@ -100,7 +96,7 @@ export class UsersService {
     const insertData = {
       token,
       user,
-      lastUpdatedOn: new Date(),
+      lastUpdatedOn: new Date()
     };
     await this.userConnectionModel.insertMany(insertData);
   }
