@@ -6,10 +6,10 @@ import { FavoritesService } from './favorites.service';
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
-  @Post()
-  create(@Body() favoriteData: FavoriteDto) {
-    return this.favoritesService.create(favoriteData);
-  }
+  // @Post()
+  // create(@Body() favoriteData: FavoriteDto) {
+  //   return this.favoritesService.create(favoriteData);
+  // }
 
   @Get('usersFavorites')
   async findAll(@Query() { userId }) {

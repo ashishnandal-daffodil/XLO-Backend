@@ -7,26 +7,26 @@ export type RoomDocument = Room & Document;
 
 @Schema()
 export class Room {
-    @Prop()
-    name: string;
+  @Prop()
+  name: string;
 
-    @Prop()
-    description: string;
+  @Prop()
+  description: string;
 
-    @Prop()
-    users: User[];
-    
-    @Prop()
-    messages: Message[];
+  @Prop()
+  users: User[];
 
-    @Prop()
-    latest_message: Message;
+  @Prop()
+  messages: Message[];
 
-    @Prop()
-    created_at: Date;
+  @Prop()
+  latest_message: Message;
 
-    @Prop()
-    updated_at: Date;
+  @Prop()
+  created_at: Date;
+
+  @Prop()
+  updated_at: Date;
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);

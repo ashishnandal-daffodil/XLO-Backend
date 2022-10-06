@@ -7,6 +7,7 @@ import {
   Product as Product_Def,
   ProductDocument,
 } from '../schemas/product.schema';
+import e from 'express';
 
 @Injectable()
 export class ProductsService {
@@ -18,16 +19,18 @@ export class ProductsService {
     return this.productModel.insertMany(ProductData);
   }
 
-  async findAll(skip = 0, limit: number) {
-    const query = this.productModel
-      .find()
-      .sort({ _id: 1 })
-      .skip(skip);
+  async findAll(skip = 0, limit: number,category:string) {
+    if(category.length){
+      const query = this.productModel.find({'category':category}).sort({ _id: 1 }).skip(skip).limit(limit);
+      return query;
 
-    if (limit) {
-      query.limit(limit);
     }
+    else{
+    const query = this.productModel.find().sort({ _id: 1 }).skip(skip).limit(limit);
     return query;
+
+    }
+  
   }
 
   async findOne(id: string) {
