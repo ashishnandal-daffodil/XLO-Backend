@@ -83,6 +83,7 @@ import { UsersService } from "src/users/users.service";
 
   @SubscribeMessage('message')
   handleMessage(@MessageBody() message: string): void {
+    console.log("chat",message)
     this.server.emit('message', message);
   }
 }
