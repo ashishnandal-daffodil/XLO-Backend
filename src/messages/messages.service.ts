@@ -11,6 +11,7 @@ export class MessagesService {
 
   identify(name: string,clientId: string){
     this.clientToUser[clientId]=name;
+    console.log("check data ",this.clientToUser)
     return Object.values(this.clientToUser);
      
   }

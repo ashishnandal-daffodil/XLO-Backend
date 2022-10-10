@@ -17,21 +17,22 @@ export class MessagesGateway {
    
   constructor(private readonly messagesService: MessagesService) {}
 
-  async handleConnection(socket: Socket) {
-    try {
-      console.log("🚀 ~ file: messages.gateway.ts ~ line 21 ~ MessagesGateway ~ handleConnection ~ socket", socket.id)
-    } catch {
-      return this.disconnect(socket);
-    }
-  }
+  // async handleConnection(socket: Socket) {
+  //   try {
+  //     console.log("🚀 ~ file: messages.gateway.ts ~ line 21 ~ MessagesGateway ~ handleConnection ~ socket", socket.id)
+  //   } catch {
+  //     return this.disconnect(socket);
+  //   }
+  // }
 
-  private disconnect(socket: Socket) {
-    socket.emit("Error", new UnauthorizedException());
-    socket.disconnect();
-  }
+  // private disconnect(socket: Socket) {
+  //   socket.emit("Error", new UnauthorizedException());
+  //   socket.disconnect();
+  // }
 
   @SubscribeMessage('createMessage')
   async create(@MessageBody() createMessageDto: CreateMessageDto,@ConnectedSocket() client:Socket) {
+    console.log("body ",createMessageDto)
     const message = await this.messagesService.create(createMessageDto,client.id);
     console.log("client id 1 ",client.id)
     this.server.emit('message',message)

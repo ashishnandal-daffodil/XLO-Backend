@@ -12,15 +12,15 @@ export class ProductsController {
     return this.productsService.create(createProductDto);
   }
 
-  @Get('allProduct')
-  async findAll(@Query() { skip, limit ,category}) {
-    return this.productsService.findAll(skip, limit,category);
-  }
-
   // @Get('allProduct')
-  // async findAll(@Query() { skip, limit}) {
-  //   return this.productsService.findAll(skip, limit);
+  // async findAll(@Query() { skip, limit ,category}) {
+  //   return this.productsService.findAll(skip, limit,category);
   // }
+
+  @Get('allProduct')
+  async findAll(@Query() { skip, limit}) {
+    return this.productsService.findAll(skip, limit);
+  }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
