@@ -16,8 +16,8 @@ export class CategoryService {
   }
 
   async findAll(skip=0,limit:number) {
-    const result = this.categoryModel.find().sort({'name':1}).skip(skip).limit(limit);
-    return result;
+    const data = this.categoryModel.find().sort({'name':1}).skip(skip).limit(limit);
+    return data;
   }
 
   // async remove(name:string){

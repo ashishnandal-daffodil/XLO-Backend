@@ -13,7 +13,9 @@ export class CategoryController {
 
   @Get('allCategory')
   async findAll(@Query() { skip,limit }) {
-    return this.categoryService.findAll(skip,limit);
+    const data = await this.categoryService.findAll(skip,limit);
+    const result= data.map(data=>data.name);
+    return result
   }
 
   // @Delete('deleteCategory')
