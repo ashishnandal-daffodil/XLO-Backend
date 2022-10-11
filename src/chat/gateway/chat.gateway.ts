@@ -23,7 +23,6 @@ import { UsersService } from "src/users/users.service";
   @WebSocketServer()
   server;
 
-  @SubscribeMessage('message')
 // export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 //   constructor(private usersService: UsersService, private roomService: RoomService) {}
 

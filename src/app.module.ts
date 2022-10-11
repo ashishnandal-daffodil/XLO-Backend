@@ -10,6 +10,7 @@ import { ChatModule } from './chat/chat.module';
 import { RoomModule } from './room/room.module';
 import { RoomService } from './room/room.service';
 import { MessagesModule } from './messages/messages.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MessagesModule } from './messages/messages.module';
     ChatModule,
     RoomModule,
     MessagesModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -11,7 +11,6 @@ export class MessagesService {
 
   identify(name: string,clientId: string){
     this.clientToUser[clientId]=name;
-    console.log("check data ",this.clientToUser)
     return Object.values(this.clientToUser);
      
   }
@@ -22,10 +21,7 @@ export class MessagesService {
   }
 
   create(createMessageDto: CreateMessageDto, clientId: string) {
-    console.log("client id ",clientId)
-
-    console.log("data ",this.clientToUser)
-
+   
     const message = {
       name: this.clientToUser[clientId],
       text: createMessageDto.text,
@@ -35,7 +31,6 @@ export class MessagesService {
   }
 
   findAll() {
-    console.log("check messages ",this.messages)
     return this.messages;
   }
 
