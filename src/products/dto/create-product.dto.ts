@@ -1,11 +1,12 @@
 export class CreateProductDto {
-  title: string;
+  id:number;
+  title: string ;
   price: number;
   description: string;
   category: string;
   purchased_on: Date;
   owner: number;
-  photos: object;
+  photos: string[];
   thumbnail_url: string;
   thumbnail_uploaded: boolean;
   active: boolean;

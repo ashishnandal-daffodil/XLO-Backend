@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from "@nestj
 import { ProductsService } from "./products.service";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
+import { SharpService } from "nestjs-sharp";
 
 @Controller("products")
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(private readonly productsService: ProductsService,private sharpService: SharpService) {}
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
@@ -15,6 +16,19 @@ export class ProductsController {
   @Get('allProduct')
   async findAll(@Query() { skip, limit ,category}) {
     return this.productsService.findAll(skip, limit,category);
+  }
+
+
+  @Get('allCategory')
+  async findAllCategories(@Query() { skip=0,limit }) {
+    const data = await this.productsService.findAllCategory();
+    if(limit){
+      return data.slice(skip,limit);
+    }
+    else{
+      return data;
+    }
+  
   }
 
   // @Get('allProduct')

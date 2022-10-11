@@ -33,6 +33,7 @@
     "bcrypt": "^5.0.1",
     "moment": "^2.29.4",
     "mongoose": "^6.6.1",
+    "nestjs-sharp": "^1.1.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
