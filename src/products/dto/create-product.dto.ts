@@ -10,6 +10,7 @@ export class CreateProductDto {
   thumbnail_url: string;
   thumbnail_uploaded: boolean;
   active: boolean;
+  seller:object;
   created_on: Date;
   updated_on: Date;
   expire_on: Date; //(30 days max after created)

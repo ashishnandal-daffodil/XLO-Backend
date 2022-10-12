@@ -17,28 +17,10 @@ export class ProductsService {
     private sharpService: SharpService,
   ) {}
 
-  async create({id,thumbnail_url,...rest}:CreateProductDto) {
+  async create(rest:CreateProductDto) {
     const count = await this.productModel.find().count();
-    id=count+1;
-    // const thumb_url=rest.photos[0];
-    // const thumb_img= await axios({url:thumb_url,responseType:'arraybuffer'});
-    // const buffer= Buffer.from(thumb_img.data,'binary');
-    // // console.log("thumb_url ",thumb_url.toString())
-    
-    // const res=await this.sharpService.edit(buffer).resize(200, 200).png().toBuffer();
-
-    // // console.log("thum_img ",thum_img);
-    // return res;
-    // return "done;
-//     sharp(req.file.path).resize(200, 200).toFile('uploads/' + 'thumbnails-' + req.file.originalname, (err, resizeImage) => {
-//       if (err) {
-//            console.log(err);
-//       } else {
-//            console.log(resizeImage);
-//       }
-// });
-
-    const data:CreateProductDto={id,thumbnail_url,...rest};
+    const idx=count+1;
+    const data:CreateProductDto={id:idx,...rest};
     return this.productModel.insertMany(data);
   }
 

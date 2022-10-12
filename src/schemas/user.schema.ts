@@ -18,6 +18,9 @@ export class User {
   password: string;
 
   @Prop()
+  address: string;
+
+  @Prop()
   created_on: Date;
 
   @Prop()
