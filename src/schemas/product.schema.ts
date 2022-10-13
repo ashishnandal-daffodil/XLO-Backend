@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { User } from './user.schema';
+import { Seller } from './seller.schema';
 
 export type ProductDocument = Product & Document;
 
@@ -10,7 +10,7 @@ export class Product {
   id: number;
 
   @Prop()
-  seller: User;
+  seller: Seller;
 
   @Prop()
   title: string;
