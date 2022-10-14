@@ -20,9 +20,9 @@ export class ProductsService {
   async create(rest:CreateProductDto) {
     const count = await this.productModel.find().count();
     const idx=count+1;
-    const thumb_url=rest.photos[0];
+    // const thumb_url=rest.photos[0];
     
-    const data:CreateProductDto={id:idx,thumbnail_url:thumb_url,thumbnail_uploaded:true,...rest};
+    const data:CreateProductDto={id:idx,...rest};
     return this.productModel.insertMany(data);
   }
 
