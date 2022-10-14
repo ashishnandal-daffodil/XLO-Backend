@@ -30,11 +30,15 @@ export class ProductsService {
        return this.productModel.distinct('category');
   }
 
-  async findAll(skip = 0, limit: number,category:string) {
+  async findAll(skip = 0, limit: number,category:string,title:string) {
     if(category?.length>0){
       const query = this.productModel.find({'category':category}).sort({ _id: 1 }).skip(skip).limit(limit);
       return query;
 
+    }
+    else if(title?.length>0){
+      const query = this.productModel.find({'title':title}).sort({ _id: 1 }).skip(skip).limit(limit);
+      return query;
     }
     else{
     const query = this.productModel.find().sort({ _id: 1 }).skip(skip).limit(limit);

@@ -38,8 +38,8 @@ export class ProductsController {
 
 
   @Get('allProduct')
-  async findAll(@Query() { skip, limit ,category}) {
-    return this.productsService.findAll(skip, limit,category);
+  async findAll(@Query() { skip, limit ,category,title}) {
+    return this.productsService.findAll(skip, limit,category,title);
   }
 
 
