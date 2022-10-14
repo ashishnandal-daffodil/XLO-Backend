@@ -26,6 +26,11 @@ export class ProductsService {
     return this.productModel.insertMany(data);
   }
 
+
+  async findAllTitle() {
+    return this.productModel.distinct('title');
+}
+
   async findAllCategory() {
        return this.productModel.distinct('category');
   }

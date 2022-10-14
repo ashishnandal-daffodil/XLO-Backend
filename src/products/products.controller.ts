@@ -43,6 +43,18 @@ export class ProductsController {
   }
 
 
+  @Get('allTitle')
+  async findAllTitle(@Query() { skip=0,limit }) {
+    const data = await this.productsService.findAllTitle();
+    if(limit){
+      return data.slice(skip,limit);
+    }
+    else{
+      return data;
+    }
+  
+  }
+
   @Get('allCategory')
   async findAllCategories(@Query() { skip=0,limit }) {
     const data = await this.productsService.findAllCategory();
