@@ -44,6 +44,7 @@ export class UsersService {
       mobile: '',
       email: '',
       name: '',
+      about:'',
       created_on: new Date(),
       updated_on: new Date(),
       ...userData,
