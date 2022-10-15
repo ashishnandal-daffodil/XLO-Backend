@@ -50,7 +50,7 @@ export class ProductsService {
     return query;
 
     }
-  
+    
   }
   // async findAll(skip = 0, limit: number) {
     

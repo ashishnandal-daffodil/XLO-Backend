@@ -14,6 +14,7 @@ export class RoomService {
   }
 
   async addCreatorToRoom(room: Room, creator: User): Promise<Room> {
+    console.log("🚀 ~ file: room.service.ts ~ line 17 ~ RoomService ~ addCreatorToRoom ~ room", room)
     room.users.push(creator);
     return room;
   }

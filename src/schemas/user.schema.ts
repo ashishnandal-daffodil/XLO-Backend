@@ -18,6 +18,9 @@ export class User {
   password: string;
 
   @Prop()
+  about:string;
+
+  @Prop()
   address: string;
 
   @Prop()

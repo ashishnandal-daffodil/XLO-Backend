@@ -37,11 +37,6 @@ export class ProductsController {
   }
 
 
-  @Get('allProduct')
-  async findAll(@Query() { skip, limit ,category,title}) {
-    return this.productsService.findAll(skip, limit,category,title);
-  }
-
 
   @Get('allTitle')
   async findAllTitle(@Query() { skip=0,limit }) {
@@ -54,6 +49,11 @@ export class ProductsController {
     }
   
   }
+  @Get('allProduct')
+  async findAll(@Query() { skip, limit ,category,title}) {
+    return this.productsService.findAll(skip, limit,category,title);
+  }
+
 
   @Get('allCategory')
   async findAllCategories(@Query() { skip=0,limit }) {
