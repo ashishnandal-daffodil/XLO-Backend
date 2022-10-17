@@ -8,6 +8,7 @@ import {
   Query,
   Put,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guards';
 import { LocalAuthGuard } from 'src/auth/local-auth.guards';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
@@ -20,6 +21,12 @@ export class UsersController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Request() req): any {
+    return req.user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('token')
+  async user(@Request() req): Promise<any>{
     return req.user;
   }
 

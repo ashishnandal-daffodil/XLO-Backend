@@ -50,8 +50,14 @@ export class ProductsController {
   
   }
   @Get('allProduct')
+<<<<<<< HEAD
   async findAll(@Query() { skip, limit ,category,title}) {
     return this.productsService.findAll(skip, limit,category,title);
+=======
+  async findAll(@Query() { skip, limit }) {
+    // console.log('findAll', skip, limit);
+    return this.productsService.findAll(skip, limit);
+>>>>>>> 05539d8dcecaefae52bea12cf88dd674f37c5adc
   }
 
 
@@ -74,6 +80,10 @@ export class ProductsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
+<<<<<<< HEAD
+=======
+    console.log('findOne');
+>>>>>>> 05539d8dcecaefae52bea12cf88dd674f37c5adc
     return this.productsService.findOne(id);
   }
 
