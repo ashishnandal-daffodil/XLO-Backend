@@ -7,7 +7,6 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { ChatModule } from './chat/chat.module';
-<<<<<<< HEAD
 import { RoomModule } from './room/room.module';
 import { RoomService } from './room/room.service';
 import { MessagesModule } from './messages/messages.module';
@@ -23,11 +22,6 @@ import { MessagesModule } from './messages/messages.module';
     RoomModule,
     MessagesModule,
   ],
-=======
-
-@Module({
-  imports: [ProductsModule, MongooseModule.forRoot("mongodb://localhost/nest"), UsersModule, AuthModule, FavoritesModule, ChatModule],
->>>>>>> 05539d8dcecaefae52bea12cf88dd674f37c5adc
   controllers: [AppController],
   providers: [AppService],
 })
