@@ -14,7 +14,7 @@ export class RoomService {
   }
 
   async addCreatorToRoom(room: Room, creator: User): Promise<Room> {
-    console.log("🚀 ~ file: room.service.ts ~ line 17 ~ RoomService ~ addCreatorToRoom ~ room", room)
+    console.log("🚀 ~ file: room.service.ts ~ line 17 ~ RoomService ~ addCreatorToRoom ~ room", creator)
     room.users.push(creator);
     return room;
   }
@@ -36,6 +36,7 @@ export class RoomService {
       created_on: new Date(),
       updated_on: new Date()
     };
+    // const seller = this.user
     const query = this.roomModel.findByIdAndUpdate(roomId, { $push: { messages: messageObj }, $set: {latest_message: messageObj} });
     return query;
   }

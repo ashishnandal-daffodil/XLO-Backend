@@ -82,6 +82,13 @@ export class MessagesGateway {
     await this.server.to(socket.id).emit("messages", messages);
     return this.onGetMyRooms(socket);
   }
+
+  @SubscribeMessage('typing')
+  async typing(@MessageBody('isTyping') isTyping: boolean,@ConnectedSocket() socket:Socket,){
+      const userName= socket.data.user.name;
+        socket.broadcast.emit('typing',{userName,isTyping}); 
+      }
+
 }
 
 
