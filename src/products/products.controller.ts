@@ -16,6 +16,7 @@ export class ProductsController {
     return this.productsService.create(createProductDto);
   }
 
+  
   @Post('file')
   @UseInterceptors(
     FileInterceptor('file',{
@@ -50,8 +51,8 @@ export class ProductsController {
   
   }
   @Get('allProduct')
-  async findAll(@Query() { skip, limit ,category,title}) {
-    return this.productsService.findAll(skip, limit,category,title);
+  async findAll(@Query() { filterKey, skip, limit }) {  
+    return this.productsService.findAll(filterKey, skip, limit);
   }
 
 
@@ -66,12 +67,7 @@ export class ProductsController {
     }
   
   }
-
-  // @Get('allProduct')
-  // async findAll(@Query() { skip, limit}) {
-  //   return this.productsService.findAll(skip, limit);
-  // }
-
+  
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);

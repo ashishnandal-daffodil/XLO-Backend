@@ -35,31 +35,51 @@ export class ProductsService {
        return this.productModel.distinct('category');
   }
 
-  async findAll(skip = 0, limit: number,category:string,title:string) {
-    if(category?.length>0){
-      const query = this.productModel.find({'category':category}).sort({ _id: 1 }).skip(skip).limit(limit);
-      return query;
+  async findSuggestions(filterKey) {
+    let filter = this.createFilter(filterKey);
+    return this.productModel.find(filter, { title: 1, category: 1, location: 1, price: 1 }).sort({ _id: 1 });
+  }
 
+  async findAll(filterKey,skip = 0, limit: number) {
+    let query;
+    if (filterKey) {
+      let filter = this.createFilter(filterKey);
+      query = this.productModel.find(filter).sort({ _id: 1 }).skip(skip);
+    } else {
+      query = this.productModel.find().sort({ _id: 1 }).skip(skip);
     }
-    else if(title?.length>0){
-      const query = this.productModel.find({'title':title}).sort({ _id: 1 }).skip(skip).limit(limit);
-      return query;
+
+    if (limit) {
+      query.limit(limit);
     }
-    else{
-    const query = this.productModel.find().sort({ _id: 1 }).skip(skip).limit(limit);
+    console.log(query);
     return query;
-
-    }
     
   }
-  // async findAll(skip = 0, limit: number) {
-    
-  //   const query = this.productModel.find().sort({ _id: 1 }).skip(skip).limit(limit);
-  //   return query;
-
-    
   
-  // }
+
+  createFilter(filterKey) {
+    let filter;
+    if (Number(filterKey)) {
+      filter = {
+        $or: [
+          { title: { $regex: filterKey } },
+          { category: { $regex: filterKey } },
+          { location: { $regex: filterKey } },
+          { price: Number(filterKey) }
+        ]
+      };
+    } else {
+      filter = {
+        $or: [
+          { title: { $regex: filterKey } },
+          { category: { $regex: filterKey } },
+          { location: { $regex: filterKey } }
+        ]
+      };
+    }
+    return filter;
+  }
 
   async findOne(id: string) {
     const product = await this.productModel.findById(id);

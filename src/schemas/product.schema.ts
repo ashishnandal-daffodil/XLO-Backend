@@ -25,6 +25,9 @@ export class Product {
   category: string;
 
   @Prop()
+  location: string;
+
+  @Prop()
   purchased_on: Date;
 
   @Prop()
