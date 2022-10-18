@@ -50,6 +50,12 @@ export class ProductsController {
     }
   
   }
+
+  @Get("suggestions")
+  async getSuggestions(@Query() {filterKey}) {
+    return this.productsService.findSuggestions(filterKey);
+  }
+
   @Get('allProduct')
   async findAll(@Query() { filterKey, skip, limit }) {  
     return this.productsService.findAll(filterKey, skip, limit);
@@ -67,7 +73,7 @@ export class ProductsController {
     }
   
   }
-  
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
