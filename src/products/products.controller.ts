@@ -21,7 +21,7 @@ export class ProductsController {
   @UseInterceptors(
     FileInterceptor('file',{
       storage:diskStorage({
-        destination: 'mongodb://localhost/nest',
+        destination: 'mongodb://localhost/nest/uploads',
         filename:(req,file,callback)=>{
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
         const ext = extname(file.originalname);

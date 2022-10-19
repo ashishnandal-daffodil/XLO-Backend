@@ -65,6 +65,7 @@ export class ProductsService {
         $or: [
           { title: { $regex: filterKey } },
           { category: { $regex: filterKey } },
+          { subcategory: { $regex: filterKey } },
           { location: { $regex: filterKey } },
           { price: Number(filterKey) }
         ]
@@ -74,6 +75,7 @@ export class ProductsService {
         $or: [
           { title: { $regex: filterKey } },
           { category: { $regex: filterKey } },
+          { subcategory: { $regex: filterKey } },
           { location: { $regex: filterKey } }
         ]
       };
