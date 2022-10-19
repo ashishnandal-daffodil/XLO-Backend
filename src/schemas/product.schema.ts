@@ -28,6 +28,9 @@ export class Product {
   location: string;
 
   @Prop()
+  subcategory: string;
+
+  @Prop()
   purchased_on: Date;
 
   @Prop()

@@ -4,10 +4,12 @@ export class CreateProductDto {
   price: number;
   description: string;
   category: string;
+  subcategory: string;
   purchased_on: Date;
   owner: number;
   photos: string[];
   thumbnail_url: string;
+  location:string;
   thumbnail_uploaded: boolean;
   active: boolean;
   seller:object;

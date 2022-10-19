@@ -52,7 +52,7 @@ export class ProductsService {
     if (limit) {
       query.limit(limit);
     }
-    console.log(query);
+    console.log("filter ",query);
     return query;
     
   }
