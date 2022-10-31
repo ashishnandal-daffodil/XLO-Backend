@@ -4,6 +4,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { User as User_Def, UserDocument } from "src/schemas/user.schema";
 import * as bcrypt from "bcrypt";
 import { UserConnection as UserConnection_Def, UserConnectionDocument } from "src/schemas/userConnection.schema";
+import { unlink } from "fs";
 
 @Injectable()
 export class UsersService {
@@ -58,7 +59,8 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException();
     }
-    return user;
+    let { _id, name, email, mobile, about_me, profile_image_filename } = user || {};
+    return { _id, name, email, mobile, about_me, profile_image_filename };
   }
 
   async getByToken(token) {
@@ -101,5 +103,19 @@ export class UsersService {
     if (params && params.token) {
       await this.userConnectionModel.deleteOne({ token: params.token });
     }
+  }
+
+  async deleteprofileimage(params) {
+    let { _id, profile_image_filename } = params || {};
+    unlink(`uploads/profileimages/${profile_image_filename}`, err => {
+      if (err) throw err;
+    });
+    let updateInfo = {
+      _id: _id,
+      changes: {
+        profile_image_filename: null
+      }
+    };
+    return this.update(updateInfo);
   }
 }

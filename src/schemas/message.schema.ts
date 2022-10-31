@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
 export type MessageDocument = Message & Document;
 
@@ -12,10 +12,10 @@ export class Message {
   sender: string;
 
   @Prop()
-  created_on: Date;
+  created_on: String;
 
   @Prop()
-  updated_on: Date;
+  updated_on: String;
 }
 
-export const UserSchema = SchemaFactory.createForClass(Message);
+export const MessageSchema = SchemaFactory.createForClass(Message);

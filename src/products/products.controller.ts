@@ -13,8 +13,18 @@ export class ProductsController {
   }
 
   @Get("allProduct")
-  async findAll(@Query() { skip, limit }) {
-    return this.productsService.findAll(skip, limit);
+  async findAll(@Query() { filterKey, skip, limit }) {
+    return this.productsService.findAll(filterKey, skip, limit);
+  }
+
+  @Get("myAds")
+  async findMyAds(@Query() { userId, skip, limit }) {
+    return this.productsService.findMyAds(userId, skip, limit);
+  }
+
+  @Get("suggestions")
+  async getSuggestions(@Query() { filterKey }) {
+    return this.productsService.findSuggestions(filterKey);
   }
 
   @Get(":id")

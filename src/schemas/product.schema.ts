@@ -25,6 +25,15 @@ export class Product {
   category: string;
 
   @Prop()
+  subcategory: string;
+
+  @Prop()
+  location: string;
+
+  @Prop()
+  search: string;
+
+  @Prop()
   purchased_on: Date;
 
   @Prop()
@@ -55,4 +64,8 @@ export class Product {
   closed_on: Date;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Product);
+const ProductSchema = SchemaFactory.createForClass(Product);
+
+ProductSchema.index({ title: "text", category: "text", location: "text" }, {collation: { locale: 'en', strength: 2}});
+
+export { ProductSchema };

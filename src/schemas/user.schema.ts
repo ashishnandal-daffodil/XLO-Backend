@@ -15,6 +15,12 @@ export class User {
   mobile: string;
 
   @Prop()
+  about_me: string;
+
+  @Prop()
+  profile_image_filename: string;
+
+  @Prop()
   password: string;
 
   @Prop()

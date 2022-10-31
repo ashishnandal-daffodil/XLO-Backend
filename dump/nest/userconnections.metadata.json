@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"nest.userconnections"}],"uuid":"191b9b16884e479a801d893d8776bf8e","collectionName":"userconnections","type":"collection"}

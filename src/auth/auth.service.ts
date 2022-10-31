@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcrypt';
-import { randomUUID } from 'crypto';
+import { Injectable } from "@nestjs/common";
+import { UsersService } from "src/users/users.service";
+import * as bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
 
 @Injectable()
 export class AuthService {
@@ -13,19 +13,28 @@ export class AuthService {
 
     let token = randomUUID();
     if (user && (await bcrypt.compare(password, user.password))) {
-      let { _id, name } = user || {};
+      let { _id, name, mobile, email, about_me, profile_image_filename } = user || {};
 
       await this.usersService.createToken({ token, user: { _id } });
-      return { user: { _id, name }, message: 'Old User', token: token };
+      return {
+        user: { _id, name, mobile, email, about_me, profile_image_filename },
+        message: "Old User",
+        token: token
+      };
     } else if (!user) {
       // create new user
       const user: any = await this.usersService.create({
         ...param,
-        password,
+        password
       });
-      let { _id, name } = user || {};
+      let { _id, name, mobile, email, about_me, profile_image_filename } = user || {};
+
       await this.usersService.createToken({ token, user: { _id } });
-      return { user: { _id, name }, message: 'New User', token: token };
+      return {
+        user: { _id, name, mobile, email, about_me, profile_image_filename },
+        message: "New User",
+        token: token
+      };
     }
     return null;
   }

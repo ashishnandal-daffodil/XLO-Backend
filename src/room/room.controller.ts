@@ -8,9 +8,4 @@ import { User } from "src/schemas/user.schema";
 @Controller("room")
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
-
-  @Post()
-  create(@Body() createRoomDto: CreateRoomDto, creator: User) {
-    return this.roomService.createRoom(createRoomDto, creator);
-  }
 }

@@ -1,3 +1,5 @@
+import { User } from "src/schemas/user.schema";
+
 export class CreateProductDto {
   title: string;
   price: number;
@@ -13,4 +15,5 @@ export class CreateProductDto {
   updated_on: Date;
   expire_on: Date; //(30 days max after created)
   closed_on: Date;
+  seller: User;
 }
