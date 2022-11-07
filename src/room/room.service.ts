@@ -25,17 +25,17 @@ export class RoomService {
     return room;
   }
 
-  async getRoomsForUser(userId) {
-    const query = this.roomModel.find({ "users._id": String(userId) }, { "messages": 0 }).sort({ "created_on": 1 });
+  async getRoomsForUser(userId): Promise<any> {
+    const query = this.roomModel.find({ "users._id": String(userId) }, { "messages": 0 }).sort({ "created_on": -1 });
     return query;
   }
 
-  async getChatForRoom(roomId: number, user: User) {
+  async getChatForRoom(roomId: number, user: User): Promise<any> {
     const query = this.roomModel.findById(roomId, { "messages": 1 });
     return query;
   }
 
-  async sendMessage(message: string, roomId: number, user: User) {
+  async sendMessage(message: string, roomId: number, user: User): Promise<any> {
     let currentDateAndTime = moment().format("LT");
     let messageObj = {
       message: message,

@@ -5,6 +5,7 @@ export class CreateProductDto {
   price: number;
   description: string;
   category: string;
+  subCategory: string;
   purchased_on: Date;
   owner: number;
   photos: object;

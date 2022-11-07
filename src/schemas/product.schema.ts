@@ -37,7 +37,7 @@ export class Product {
   purchased_on: Date;
 
   @Prop()
-  owner: number;
+  owner: string;
 
   @Prop([String])
   photos: string[];

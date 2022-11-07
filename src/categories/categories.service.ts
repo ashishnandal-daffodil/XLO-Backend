@@ -9,11 +9,11 @@ export class CategoryService {
     @InjectModel(Category_Def.name) private categoryModel: Model<CategoryDocument>
   ) {}
 
-  async create(ProductData) {
+  async create(ProductData): Promise<any> {
     return this.categoryModel.insertMany({ category_name: ProductData.category });
   }
 
-  async findAll() {
+  async findAll(): Promise<any> {
     return this.categoryModel.find().sort({ _id: 1 });
   }
 }
