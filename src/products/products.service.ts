@@ -35,11 +35,29 @@ export class ProductsService {
 
   async findMyAds(userId, skip = 0, limit: number): Promise<any> {
     let query;
-    query = this.productModel.find({ "seller._id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
+    query = this.productModel.find({ "seller_id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
     if (limit) {
       query.limit(limit);
     }
     return query;
+  }
+
+  async findMyDeletedAds(userId, skip = 0, limit: number): Promise<any> {
+    let query;
+    query = this.productModel.find({ "seller_id": userId, active: false }).sort({ created_on: -1 }).skip(skip);
+    if (limit) {
+      query.limit(limit);
+    }
+    return query;
+  }
+
+  async findMyExpiredAds(userId, skip = 0, limit: number): Promise<any> {
+    // let query;
+    // query = this.productModel.find({ "seller_id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
+    // if (limit) {
+    //   query.limit(limit);
+    // }
+    // return query;
   }
 
   async findOne(id: string): Promise<any> {
@@ -59,44 +77,44 @@ export class ProductsService {
   }
 
   async delete(productId, productImages): Promise<any> {
-    for (let productImageName of productImages) {
-      unlink(`uploads/productimages/${productImageName}`, err => {
-        if (err) throw err;
-      });
+    if (productImages) {
+      for (let productImageName of productImages) {
+        unlink(`uploads/productimages/${productImageName}`, err => {
+          if (err) throw err;
+        });
+      }
+      return this.productModel.remove({ "_id": productId });
+    } else {
+      return this.productModel.updateMany({ "_id": productId }, { $set: { active: false } });
     }
-    return this.productModel.updateMany({ "_id": productId }, { $set: { active: false } });
   }
 
   async update(ProductData): Promise<any> {
     //remove images from server folder and also update the photos field of product
-    for (let productImageName of ProductData.deletedImages.deletedImages) {
-      let productImageFileName = productImageName.split("productimage/")[1];
-      unlink(`uploads/productimages/${productImageFileName}`, err => {
-        if (err) throw err;
-      });
-      this.updatePhotos(ProductData.productId, productImageFileName);
+    if (ProductData.deletedImages) {
+      for (let productImageName of ProductData.deletedImages.deletedImages) {
+        let productImageFileName = productImageName.split("productimage/")[1];
+        unlink(`uploads/productimages/${productImageFileName}`, err => {
+          if (err) throw err;
+        });
+        this.updatePhotos(ProductData.productId, productImageFileName);
+      }
     }
     //update product data
-    return this.productModel.updateOne(
-      { _id: ProductData.productId },
-      {
-        $set: {
-          category: ProductData.category,
-          subcategory: ProductData.subcategory,
-          title: ProductData.title,
-          description: ProductData.description,
-          owner: ProductData.owner,
-          price: ProductData.price,
-          location: ProductData.location,
-          updated_on: ProductData.updated_on
-        },
-        $push: {
-          photos: {
-            $each: ProductData.photos
-          }
+    let updateQuery = this.createQuery(ProductData);
+    return this.productModel.updateOne({ _id: ProductData.productId }, updateQuery);
+  }
+
+  createQuery(ProductData) {
+    let query = { $set: ProductData.changes };
+    if (ProductData?.photos.length) {
+      query["$push"] = {
+        photos: {
+          $each: ProductData.photos
         }
-      }
-    );
+      };
+    }
+    return query;
   }
 
   async updatePhotos(productId, productImageFileName) {
@@ -118,7 +136,7 @@ export class ProductsService {
       ];
     }
     if (userId) {
-      filter["seller._id"] = { "$ne": userId };
+      filter["seller_id"] = { "$ne": userId };
     }
     if (category) {
       filter["category"] = category;

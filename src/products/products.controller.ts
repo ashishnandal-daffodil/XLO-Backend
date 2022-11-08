@@ -46,7 +46,7 @@ export class ProductsController {
       return file.filename;
     });
     body.photos = filenames;
-    body.seller = JSON.parse(body.seller);
+    body.seller_id = body.seller_id;
     body.created_on = new Date();
     body.updated_on = new Date();
     return this.productsService.create(body);
@@ -56,16 +56,21 @@ export class ProductsController {
   async delete(@Body() body: any) {
     return this.productsService.delete(body.productId, body.productImages);
   }
-  
+
   @Put("update")
   @UseInterceptors(FilesInterceptor("photos", 5, storage))
   async updateProduct(@UploadedFiles() files, @Body() body: any) {
-    const filenames = files.map(file => {
-      return file.filename;
-    });
-    body.photos = filenames;
-    body.deletedImages = JSON.parse(body.deletedImages);
-    body.updated_on = new Date();
+    if (files) {
+      const filenames = files.map(file => {
+        return file.filename;
+      });
+      body.photos = filenames;
+    }
+    if (body.deletedImages) {
+      body.deletedImages = JSON.parse(body.deletedImages);
+    }
+    body.changes = JSON.parse(body.changes);
+    body.changes.updated_on = new Date();
     return this.productsService.update(body);
   }
 
@@ -82,6 +87,16 @@ export class ProductsController {
   @Get("myAds")
   async findMyAds(@Query() { userId, skip, limit }) {
     return this.productsService.findMyAds(userId, skip, limit);
+  }
+
+  @Get("myDeletedAds")
+  async findMyDeletedAds(@Query() { userId, skip, limit }) {
+    return this.productsService.findMyDeletedAds(userId, skip, limit);
+  }
+
+  @Get("myExpiredAds")
+  async findMyExppiredAds(@Query() { userId, skip, limit }) {
+    return this.productsService.findMyExpiredAds(userId, skip, limit);
   }
 
   @Get("suggestions")

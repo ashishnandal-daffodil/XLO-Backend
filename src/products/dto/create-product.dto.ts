@@ -1,4 +1,4 @@
-import { User } from "src/schemas/user.schema";
+import { ObjectId } from "mongoose";
 
 export class CreateProductDto {
   title: string;
@@ -16,5 +16,5 @@ export class CreateProductDto {
   updated_on: Date;
   expire_on: Date; //(30 days max after created)
   closed_on: Date;
-  seller: User;
+  seller_id: ObjectId;
 }
