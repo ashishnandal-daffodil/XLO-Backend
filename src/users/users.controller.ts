@@ -50,6 +50,11 @@ export class UsersController {
     return this.usersService.getByToken(token);
   }
 
+  @Get("getDetails")
+  getUserData(@Query() { userId }) {
+    return this.usersService.getUserDataById(userId);
+  }
+
   @Post("upload")
   @UseInterceptors(FileInterceptor("file", storage))
   uploadFile(@UploadedFile() file, @Request() req) {

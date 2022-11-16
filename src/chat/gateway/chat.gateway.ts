@@ -44,15 +44,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("createRoom")
   async onCreateRoom(socket: Socket, room: Room): Promise<Room> {
-    return this.roomService.createRoom(room, socket.data.user);
+    return this.roomService.createRoom(room);
   }
 
-  @SubscribeMessage("getMyRooms")
+  @SubscribeMessage("getMyRoomsAsBuyer")
+  async onGetMyRoomsAsBuyer(socket: Socket, userId?): Promise<any> {
+    let userID = userId ? new mongoose.Types.ObjectId(userId) : socket.data.user._id;
+    const rooms = await this.roomService.getRoomsForUserAsBuyer(userID);
+    // Only emit rooms to the specific connected client
+    return this.server.to(socket.id).emit("roomsAsBuyer", rooms);
+  }
+
+  @SubscribeMessage("getMyRoomsAsSeller")
   async onGetMyRooms(socket: Socket, userId?): Promise<any> {
     let userID = userId ? new mongoose.Types.ObjectId(userId) : socket.data.user._id;
-    const rooms = await this.roomService.getRoomsForUser(userID);
+    const rooms = await this.roomService.getRoomsForUserAsSeller(userID);
     // Only emit rooms to the specific connected client
-    return this.server.to(socket.id).emit("rooms", rooms);
+    return this.server.to(socket.id).emit("roomsAsSeller", rooms);
   }
 
   @SubscribeMessage("getChatForRoom")

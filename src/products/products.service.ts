@@ -20,44 +20,63 @@ export class ProductsService {
     return this.productModel.insertMany(ProductData);
   }
 
-  async findAll(userId, filterKey, category, skip = 0, limit: number): Promise<any> {
+  async findAll(userId, filterKey, category, sortJSON, skip = 0, limit: number): Promise<any> {
     let query;
     let filter = this.createFilter(filterKey, userId, category);
     if (Number(filterKey)) {
       filter["$or"].push({ price: filterKey });
     }
-    query = this.productModel.find(filter).collation(this.collation).sort({ created_on: -1 }).skip(skip);
+    query = this.productModel.find(filter).collation(this.collation).skip(skip);
     if (limit) {
-      query.limit(limit);
+      query = query.limit(limit);
+    }
+    if (sortJSON) {
+      query = query.sort(sortJSON);
+    } else {
+      query = query.sort({ "created_on": -1 });
     }
     return query;
   }
 
   async findMyAds(userId, skip = 0, limit: number): Promise<any> {
-    let query;
-    query = this.productModel.find({ "seller_id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
+    let query = this.productModel.find({ "seller._id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
     if (limit) {
       query.limit(limit);
     }
     return query;
+  }
+
+  async getMyAdsCount(userId) {
+    let totalCount = this.productModel.find({ "seller._id": userId, active: true }).count();
+    return totalCount;
   }
 
   async findMyDeletedAds(userId, skip = 0, limit: number): Promise<any> {
     let query;
-    query = this.productModel.find({ "seller_id": userId, active: false }).sort({ created_on: -1 }).skip(skip);
+    query = this.productModel.find({ "seller._id": userId, active: false }).sort({ created_on: -1 }).skip(skip);
     if (limit) {
       query.limit(limit);
     }
     return query;
   }
 
+  async getMyDeletedAdsCount(userId) {
+    let totalCount = this.productModel.find({ "seller._id": userId, active: false }).count();
+    return totalCount;
+  }
+
   async findMyExpiredAds(userId, skip = 0, limit: number): Promise<any> {
     // let query;
-    // query = this.productModel.find({ "seller_id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
+    // query = this.productModel.find({ "seller._id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
     // if (limit) {
     //   query.limit(limit);
     // }
     // return query;
+  }
+
+  async getMyExpiredAdsCount(userId) {
+    // let totalCount = this.productModel.find({ "seller._id": userId, active: false });
+    // return totalCount;
   }
 
   async findOne(id: string): Promise<any> {
@@ -136,7 +155,7 @@ export class ProductsService {
       ];
     }
     if (userId) {
-      filter["seller_id"] = { "$ne": userId };
+      filter["seller._id"] = { "$ne": userId };
     }
     if (category) {
       filter["category"] = category;

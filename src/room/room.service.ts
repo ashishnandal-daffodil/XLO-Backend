@@ -10,23 +10,24 @@ import { Socket } from "socket.io";
 export class RoomService {
   constructor(@InjectModel(Room_Def.name) private roomModel: Model<RoomDocument>) {}
 
-  async createRoom(room: Room, creator: User): Promise<Room> {
-    creator["_id"] = String(creator["_id"]);
-    const newRoom = await this.addCreatorToRoom(room, creator);
-    const roomName = newRoom.users.reduce(function (prevValue, currentValue) {
-      return currentValue["_id"] + prevValue;
-    }, "");
-    newRoom.name = roomName;
-    return this.roomModel.create(newRoom);
+  async createRoom(room: Room): Promise<Room> {
+    const roomName = `${room.buyer_id}${room.seller_id}`;
+    room.name = roomName;
+    return this.roomModel.create(room);
   }
 
-  async addCreatorToRoom(room: Room, creator: User): Promise<Room> {
-    room.users.push(creator);
-    return room;
+  // async addCreatorToRoom(room: Room, creator: User): Promise<Room> {
+  //   room.users.push(creator);
+  //   return room;
+  // }
+
+  async getRoomsForUserAsBuyer(userId): Promise<any> {
+    const query = this.roomModel.find({ "buyer_id": String(userId) }, { "messages": 0 }).sort({ "created_on": -1 });
+    return query;
   }
 
-  async getRoomsForUser(userId): Promise<any> {
-    const query = this.roomModel.find({ "users._id": String(userId) }, { "messages": 0 }).sort({ "created_on": -1 });
+  async getRoomsForUserAsSeller(userId): Promise<any> {
+    const query = this.roomModel.find({ "seller_id": String(userId) }, { "messages": 0 }).sort({ "created_on": -1 });
     return query;
   }
 

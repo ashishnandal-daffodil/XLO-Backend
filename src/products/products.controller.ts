@@ -46,7 +46,7 @@ export class ProductsController {
       return file.filename;
     });
     body.photos = filenames;
-    body.seller_id = body.seller_id;
+    body.seller = JSON.parse(body.seller);
     body.created_on = new Date();
     body.updated_on = new Date();
     return this.productsService.create(body);
@@ -80,23 +80,33 @@ export class ProductsController {
   }
 
   @Get("allProduct")
-  async findAll(@Query() { userId, filterKey, category, skip, limit }) {
-    return this.productsService.findAll(userId, filterKey, category, skip, limit);
+  async findAll(@Query() { userId, filterKey, category, sort, skip, limit }) {
+    let sortJSON;
+    if (sort) {
+      sortJSON = JSON.parse(sort);
+    }
+    return this.productsService.findAll(userId, filterKey, category, sortJSON, skip, limit);
   }
 
   @Get("myAds")
   async findMyAds(@Query() { userId, skip, limit }) {
-    return this.productsService.findMyAds(userId, skip, limit);
+    let myAds = await this.productsService.findMyAds(userId, skip, limit);
+    let myAdsCount = await this.productsService.getMyAdsCount(userId);
+    return [myAds, myAdsCount];
   }
 
   @Get("myDeletedAds")
   async findMyDeletedAds(@Query() { userId, skip, limit }) {
-    return this.productsService.findMyDeletedAds(userId, skip, limit);
+    let myDeletedAds = await this.productsService.findMyDeletedAds(userId, skip, limit);
+    let myDeletedAdsCount = await this.productsService.getMyDeletedAdsCount(userId);
+    return [myDeletedAds, myDeletedAdsCount];
   }
 
   @Get("myExpiredAds")
-  async findMyExppiredAds(@Query() { userId, skip, limit }) {
-    return this.productsService.findMyExpiredAds(userId, skip, limit);
+  async findMyExpiredAds(@Query() { userId, skip, limit }) {
+    let myExpiredAds = await this.productsService.findMyExpiredAds(userId, skip, limit);
+    let myExpiredAdsCount = await this.productsService.getMyExpiredAdsCount(userId);
+    return [myExpiredAds, myExpiredAdsCount];
   }
 
   @Get("suggestions")

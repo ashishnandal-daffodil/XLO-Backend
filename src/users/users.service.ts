@@ -75,6 +75,12 @@ export class UsersService {
     return {};
   }
 
+  async getUserDataById(userId) {
+    let user = await this.findOne({ _id: userId });
+    let { _id, name, email, mobile, created_on, updated_on, profile_image_filename } = user || {};
+    return { _id, name, email, mobile, created_on, updated_on, profile_image_filename };
+  }
+
   async findUserConnection(param: any) {
     let filter = {};
     if (param && param.token) {
