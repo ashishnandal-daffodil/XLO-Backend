@@ -8,8 +8,8 @@ import { AuthModule } from "./auth/auth.module";
 import { FavoritesModule } from "./favorites/favorites.module";
 import { ChatModule } from "./chat/chat.module";
 import { RoomModule } from "./room/room.module";
-import { RoomService } from "./room/room.service";
 import { CategoryModule } from "./categories/categories.module";
+import { SocketConnectionModule } from "./socket-connection/socketConnection.module";
 
 @Module({
   imports: [
@@ -20,7 +20,8 @@ import { CategoryModule } from "./categories/categories.module";
     FavoritesModule,
     ChatModule,
     RoomModule,
-    CategoryModule
+    CategoryModule,
+    SocketConnectionModule
   ],
   controllers: [AppController],
   providers: [AppService]

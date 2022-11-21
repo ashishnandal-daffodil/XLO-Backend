@@ -10,11 +10,16 @@ import mongoose from "mongoose";
 import { Socket } from "socket.io";
 import { RoomService } from "src/room/room.service";
 import { Room } from "src/schemas/room.schema";
+import { SocketConnectionService } from "src/socket-connection/socket-connection.service";
 import { UsersService } from "src/users/users.service";
 
 @WebSocketGateway({ cors: { origin: ["https://hoppscotch.io", "http://localhost:3000", "http://localhost:4200"] } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private usersService: UsersService, private roomService: RoomService) {}
+  constructor(
+    private usersService: UsersService,
+    private roomService: RoomService,
+    private socketConnectionService: SocketConnectionService
+  ) {}
 
   @WebSocketServer() server;
 
@@ -26,6 +31,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return this.disconnect(socket);
       } else {
         socket.data.user = user;
+        //Insert the connected socketId and corresponding userId
+        await this.socketConnectionService.addConnectedUser({ user_id: user._id, socket_id: socket.id });
+        //Get the user rooms by socket
         return this.onGetMyRooms(socket);
       }
     } catch {
@@ -33,7 +41,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  handleDisconnect(socket: Socket) {
+  async handleDisconnect(socket: Socket) {
+    //remove connection from socketConnection
+    await this.socketConnectionService.removeConnectedUser(socket.id);
     socket.disconnect();
   }
 
@@ -45,6 +55,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage("createRoom")
   async onCreateRoom(socket: Socket, room: Room): Promise<Room> {
     return this.roomService.createRoom(room);
+    //Also send a notification to the seller that the buyer tried to communicate with you regarding a particular product
   }
 
   @SubscribeMessage("getMyRoomsAsBuyer")
@@ -71,10 +82,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("sendMessage")
   async onSendMessage(socket, data): Promise<any> {
-    let { message, roomId, roomName } = data;
-    await this.roomService.sendMessage(message, roomId, socket.data.user);
-    const messages = await this.roomService.getChatForRoom(roomId, socket.data.user);
-    await this.server.emit("messages", messages);
-    return this.onGetMyRooms(socket);
+    let { message, roomId } = data;
+    let { buyer_id, seller_id } = await this.roomService.sendMessage(message, roomId, socket.data.user);
+
+    //Get latest_message object from room
+    let { latest_message } = await this.roomService.getLatestMessage(roomId);
+
+    //Find socket Id of connected users
+    let buyerConnection = await this.socketConnectionService.findConnectedUser(buyer_id);
+    let sellerConnection = await this.socketConnectionService.findConnectedUser(seller_id);
+    let buyerSocketId = buyerConnection.length && buyerConnection[0].socket_id;
+    let sellerSocketId = sellerConnection.length && sellerConnection[0].socket_id;
+
+    if (buyerSocketId) {
+      await this.server.to(buyerSocketId).emit("message", latest_message);
+    }
+    if (sellerSocketId) {
+      await this.server.to(sellerSocketId).emit("message", latest_message);
+    }
+    return;
   }
 }

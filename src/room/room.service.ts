@@ -50,4 +50,8 @@ export class RoomService {
     });
     return query;
   }
+
+  async getLatestMessage(roomId: number): Promise<any> {
+    return this.roomModel.findById(roomId, {latest_message: 1, _id: 0});
+  }
 }
