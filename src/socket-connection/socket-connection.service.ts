@@ -14,13 +14,14 @@ export class SocketConnectionService {
   async addConnectedUser(connectedUser: SocketConnection): Promise<any> {
     let connection = await this.findConnectedUser(connectedUser.user_id);
     if (connection.length) {
-      return this.socketModel.updateOne(
+      await this.socketModel.updateOne(
         { user_id: connectedUser.user_id },
         { $set: { socket_id: connectedUser.socket_id } }
       );
     } else {
-      return this.socketModel.create(connectedUser);
+      await this.socketModel.create(connectedUser);
     }
+    return;
   }
 
   async findConnectedUser(userId: string): Promise<any> {
@@ -29,5 +30,9 @@ export class SocketConnectionService {
 
   async removeConnectedUser(socketId: string): Promise<any> {
     return this.socketModel.deleteOne({ socket_id: socketId });
+  }
+
+  async getAllConnectedUsers(): Promise<any> {
+    return this.socketModel.find();
   }
 }
