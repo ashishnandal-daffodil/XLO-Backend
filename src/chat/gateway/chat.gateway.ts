@@ -110,8 +110,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     let newRoom = await this.roomService.createRoom(room);
     let sellerSocketConnection = await this.socketConnectionService.findConnectedUser(room.seller_id);
     let buyerSocketConnection = await this.socketConnectionService.findConnectedUser(room.buyer_id);
-    let sellerSocketId = sellerSocketConnection[0].socket_id;
-    let buyerSocketId = buyerSocketConnection[0].socket_id;
+    let sellerSocketId = sellerSocketConnection.length ? sellerSocketConnection[0].socket_id : null;
+    let buyerSocketId = buyerSocketConnection.length ? buyerSocketConnection[0].socket_id : null;
     if (sellerSocketId) {
       await this.server.to(sellerSocketId).emit("newRoomCreated", newRoom);
     }

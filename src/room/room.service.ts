@@ -24,11 +24,6 @@ export class RoomService {
     return query;
   }
 
-  // async addCreatorToRoom(room: Room, creator: User): Promise<Room> {
-  //   room.users.push(creator);
-  //   return room;
-  // }
-
   async getRoomsForUserAsBuyer(userId): Promise<any> {
     const query = this.roomModel.find({ "buyer_id": String(userId) }, { "messages": 0 }).sort({ "created_on": -1 });
     return query;
@@ -65,5 +60,19 @@ export class RoomService {
 
   async getRoomInfo(roomId: number): Promise<any> {
     return this.roomModel.findById(roomId);
+  }
+
+  async updateUnreadMessageCount(roomId: number, userId: number, resetCount: boolean): Promise<any> {
+    if (resetCount) {
+      return this.roomModel.updateOne(
+        { _id: roomId, "unread_messages.userId": userId },
+        { $set: { "unread_messages.$.count": 0 } }
+      );
+    } else {
+      return this.roomModel.updateOne(
+        { _id: roomId, "unread_messages.userId": userId },
+        { $inc: { "unread_messages.$.count": 1 } }
+      );
+    }
   }
 }

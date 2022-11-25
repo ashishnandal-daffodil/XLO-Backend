@@ -29,6 +29,14 @@ export class Room {
   latest_message: Message;
 
   @Prop()
+  unread_messages: [
+    {
+      userId: string;
+      count: number;
+    }
+  ];
+
+  @Prop()
   created_at: Date;
 
   @Prop()
