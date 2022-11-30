@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, ObjectId, SchemaTypes, Types } from "mongoose";
+import { ObjectID } from "typeorm";
 import { User } from "./user.schema";
 
 export type ProductDocument = Product & Document;
@@ -8,9 +9,9 @@ export type ProductDocument = Product & Document;
 export class Product {
   @Prop()
   id: number;
-
-  @Prop()
-  seller: User;
+  z;
+  @Prop({ type: SchemaTypes.ObjectId })
+  seller: Types.ObjectId;
 
   @Prop()
   title: string;
@@ -66,6 +67,9 @@ export class Product {
 
 const ProductSchema = SchemaFactory.createForClass(Product);
 
-ProductSchema.index({ title: "text", category: "text", location: "text" }, {collation: { locale: 'en', strength: 2}});
+ProductSchema.index(
+  { title: "text", category: "text", location: "text" },
+  { collation: { locale: "en", strength: 2 } }
+);
 
 export { ProductSchema };

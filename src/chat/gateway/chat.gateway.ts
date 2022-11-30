@@ -15,7 +15,13 @@ import { UsersService } from "src/users/users.service";
 
 @WebSocketGateway({
   cors: {
-    origin: ["https://hoppscotch.io", "http://localhost:3000", "http://localhost:4200", "http://192.168.3.240:4200"]
+    origin: [
+      "https://hoppscotch.io",
+      "http://localhost:3000",
+      "http://localhost:4200",
+      "http://192.168.3.240:4200",
+      "http://192.168.29.152:4200"
+    ]
   }
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -159,9 +165,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (buyerSocketId) {
       await this.server.to(buyerSocketId).emit("message", { latest_message: latest_message, roomId: roomId });
+    } else {
+      await this.roomService.updateUnreadMessageCount(roomId, buyer_id, false);
     }
     if (sellerSocketId) {
       await this.server.to(sellerSocketId).emit("message", { latest_message: latest_message, roomId: roomId });
+    } else {
+      await this.roomService.updateUnreadMessageCount(roomId, seller_id, false);
     }
     return;
   }

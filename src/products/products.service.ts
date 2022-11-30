@@ -39,7 +39,7 @@ export class ProductsService {
   }
 
   async findMyAds(userId, skip = 0, limit: number): Promise<any> {
-    let query = this.productModel.find({ "seller._id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
+    let query = this.productModel.find({ "seller": userId, active: true }).sort({ created_on: -1 }).skip(skip);
     if (limit) {
       query.limit(limit);
     }
@@ -47,13 +47,13 @@ export class ProductsService {
   }
 
   async getMyAdsCount(userId) {
-    let totalCount = this.productModel.find({ "seller._id": userId, active: true }).count();
+    let totalCount = this.productModel.find({ "seller": userId, active: true }).count();
     return totalCount;
   }
 
   async findMyDeletedAds(userId, skip = 0, limit: number): Promise<any> {
     let query;
-    query = this.productModel.find({ "seller._id": userId, active: false }).sort({ created_on: -1 }).skip(skip);
+    query = this.productModel.find({ "seller": userId, active: false }).sort({ created_on: -1 }).skip(skip);
     if (limit) {
       query.limit(limit);
     }
@@ -61,13 +61,13 @@ export class ProductsService {
   }
 
   async getMyDeletedAdsCount(userId) {
-    let totalCount = this.productModel.find({ "seller._id": userId, active: false }).count();
+    let totalCount = this.productModel.find({ "seller": userId, active: false }).count();
     return totalCount;
   }
 
   async findMyExpiredAds(userId, skip = 0, limit: number): Promise<any> {
     // let query;
-    // query = this.productModel.find({ "seller._id": userId, active: true }).sort({ created_on: -1 }).skip(skip);
+    // query = this.productModel.find({ "seller": userId, active: true }).sort({ created_on: -1 }).skip(skip);
     // if (limit) {
     //   query.limit(limit);
     // }
@@ -75,7 +75,7 @@ export class ProductsService {
   }
 
   async getMyExpiredAdsCount(userId) {
-    // let totalCount = this.productModel.find({ "seller._id": userId, active: false });
+    // let totalCount = this.productModel.find({ "seller": userId, active: false });
     // return totalCount;
   }
 
@@ -155,7 +155,7 @@ export class ProductsService {
       ];
     }
     if (userId) {
-      filter["seller._id"] = { "$ne": userId };
+      filter["seller"] = { "$ne": userId };
     }
     if (category) {
       filter["category"] = category;

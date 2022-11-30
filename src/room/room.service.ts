@@ -11,8 +11,6 @@ export class RoomService {
   constructor(@InjectModel(Room_Def.name) private roomModel: Model<RoomDocument>) {}
 
   async createRoom(room: Room): Promise<Room> {
-    const roomName = `${room.buyer_id}${room.seller_id}`;
-    room.name = roomName;
     return this.roomModel.create(room);
   }
 

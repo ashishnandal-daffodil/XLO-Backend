@@ -46,7 +46,6 @@ export class ProductsController {
       return file.filename;
     });
     body.photos = filenames;
-    body.seller = JSON.parse(body.seller);
     body.created_on = new Date();
     body.updated_on = new Date();
     return this.productsService.create(body);

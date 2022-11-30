@@ -17,5 +17,5 @@ export class CreateProductDto {
   updated_on: Date;
   expire_on: Date; //(30 days max after created)
   closed_on: Date;
-  seller: User;
+  seller: ObjectId;
 }
