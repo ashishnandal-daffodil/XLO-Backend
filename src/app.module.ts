@@ -10,6 +10,9 @@ import { ChatModule } from "./chat/chat.module";
 import { RoomModule } from "./room/room.module";
 import { CategoryModule } from "./categories/categories.module";
 import { SocketConnectionModule } from "./socket-connection/socketConnection.module";
+import { NotificationsService } from './notifications/notifications.service';
+import { NotificationsController } from './notifications/notifications.controller';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -21,7 +24,8 @@ import { SocketConnectionModule } from "./socket-connection/socketConnection.mod
     ChatModule,
     RoomModule,
     CategoryModule,
-    SocketConnectionModule
+    SocketConnectionModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService]

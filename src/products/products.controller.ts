@@ -41,7 +41,7 @@ export class ProductsController {
 
   @Post("upload")
   @UseInterceptors(FilesInterceptor("photos", 5, storage))
-  uploadFile(@UploadedFiles() files, @Body() body: any) {
+  async uploadFile(@UploadedFiles() files, @Body() body: any) {
     const filenames = files.map(file => {
       return file.filename;
     });

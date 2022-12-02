@@ -8,6 +8,7 @@ import {
 } from "@nestjs/websockets";
 import mongoose from "mongoose";
 import { Socket } from "socket.io";
+import { NotificationsService } from "src/notifications/notifications.service";
 import { RoomService } from "src/room/room.service";
 import { Room } from "src/schemas/room.schema";
 import { SocketConnectionService } from "src/socket-connection/socket-connection.service";
@@ -28,7 +29,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private usersService: UsersService,
     private roomService: RoomService,
-    private socketConnectionService: SocketConnectionService
+    private socketConnectionService: SocketConnectionService,
+    private notificationsService: NotificationsService
   ) {}
 
   @WebSocketServer() server;
@@ -151,8 +153,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("sendMessage")
   async onSendMessage(socket, data): Promise<any> {
+    //Extract message and roomId from request body
     let { message, roomId } = data;
+
+    //Update message in DB and extract buyerId and sellerId from room returned by update query
     let { buyer_id, seller_id } = await this.roomService.sendMessage(message, roomId, socket.data.user);
+
+    //Get Buyer and Seller Details using their Ids
+    let buyerDetails = await this.usersService.getUserDataById(buyer_id);
+    let sellerDetails = await this.usersService.getUserDataById(seller_id);
 
     //Get latest_message object from room
     let { latest_message } = await this.roomService.getRoomInfo(roomId);
@@ -163,16 +172,42 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     let buyerSocketId = buyerConnection.length && buyerConnection[0].socket_id;
     let sellerSocketId = sellerConnection.length && sellerConnection[0].socket_id;
 
+    //Create a messageData object variable
+    let messageData = { latest_message: latest_message, roomId: roomId };
+
+    //Create a notifications variable which will contain all the user notifications till now
+    let notifications = {};
+    if (socket.data.user["_id"] == buyer_id) {
+      notifications = await this.handleNotification(seller_id, messageData, buyerDetails.name);
+    }
+    if (socket.data.user["_id"] == seller_id) {
+      notifications = await this.handleNotification(buyer_id, messageData, sellerDetails.name);
+    }
+    
     if (buyerSocketId) {
-      await this.server.to(buyerSocketId).emit("message", { latest_message: latest_message, roomId: roomId });
+      //If buyer is online, send message to him
+      await this.server.to(buyerSocketId).emit("message", messageData);
+      if (buyer_id != socket.data.user._id) {
+        // If buyer is the receiver of message, then resend all the notifications
+        await this.server.to(buyerSocketId).emit("notifications", notifications);
+      }
     } else {
+      //If buyer is offline, then update the unread message count in the DB
       await this.roomService.updateUnreadMessageCount(roomId, buyer_id, false);
     }
+
     if (sellerSocketId) {
-      await this.server.to(sellerSocketId).emit("message", { latest_message: latest_message, roomId: roomId });
+      //If seller is online, send message to him and also resend all the notifications
+      await this.server.to(sellerSocketId).emit("message", messageData);
+      if (seller_id != socket.data.user._id) {
+        // If seller is the receiver of message, then resend all the notifications
+        await this.server.to(sellerSocketId).emit("notifications", notifications);
+      }
     } else {
+      //If seller is offline, then update the unread message count in the DB
       await this.roomService.updateUnreadMessageCount(roomId, seller_id, false);
     }
+
     return;
   }
 
@@ -190,6 +225,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return this.server.to(connectedUser[0].socket_id).emit("isTyping", { roomId: roomId });
     } else {
       return;
+    }
+  }
+
+  async handleNotification(userId, messageData, senderName) {
+    //Find if there is an existing notification for the given user from a given sender
+    let existingNotification = await this.notificationsService.findNotification(userId, "message", senderName);
+
+    if (existingNotification.length) {
+      //If there is an existing message notification, then update it
+      return await this.notificationsService.updateNotification(userId, "message", senderName);
+    } else {
+      //If there is no existing notification, then create a new notification for the user
+      return await this.notificationsService.createMessageNotification(userId, messageData, senderName);
     }
   }
 }

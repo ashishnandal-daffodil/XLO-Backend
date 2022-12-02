@@ -9,7 +9,7 @@ export type ProductDocument = Product & Document;
 export class Product {
   @Prop()
   id: number;
-  z;
+
   @Prop({ type: SchemaTypes.ObjectId })
   seller: Types.ObjectId;
 
