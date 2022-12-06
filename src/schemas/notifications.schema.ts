@@ -12,7 +12,9 @@ export class Notification {
   notifications: [
     {
       type: string;
-      notification: string;
+      messageCount: number;
+      roomId: string;
+      senderName: string;
       created_on: string;
     }
   ];

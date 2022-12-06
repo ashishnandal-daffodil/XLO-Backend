@@ -20,43 +20,63 @@ export class NotificationsService {
     return this.notificationModel.find({ userId: userId });
   }
 
-  async popNotifications(userId): Promise<any> {
-    return this.notificationModel.updateOne({ userId: userId }, { $set: { notifications: [] } });
+  async pullNotification(userId, type, senderName): Promise<any> {
+    await this.notificationModel.findOneAndUpdate(
+      {
+        userId: userId
+      },
+      {
+        $pull: { "notifications": { "type": type, "senderName": senderName } }
+      }
+    );
+    return this.notificationModel.find({ userId: userId });
   }
 
-  async createMessageNotification(userId, data, senderName): Promise<any> {
+  async createMessageNotification(userId, data, senderName, roomId): Promise<any> {
     let messageNotification = {
       type: "message",
-      notification: {
-        messageCount: 1,
-        senderName: senderName
-      },
+      messageCount: 1,
+      roomId: roomId,
+      senderName: senderName,
       created_on: data?.latest_message?.created_on
     };
-    return this.notificationModel.findOneAndUpdate(
+    await this.notificationModel.findOneAndUpdate(
       { userId: userId },
       { $push: { notifications: messageNotification } },
-      { upsert: true, new: true }
+      { upsert: true }
     );
+    return this.notificationModel.find({ userId: userId });
   }
 
   async findNotification(userId, type, senderName): Promise<any> {
     return this.notificationModel.find({
       userId: userId,
-      "notifications": { $elemMatch: { "type": type, "notification.senderName": senderName } }
+      "notifications": { $elemMatch: { "type": type, "senderName": senderName } }
     });
   }
 
   async updateNotification(userId, type, senderName): Promise<any> {
-    return this.notificationModel.findOneAndUpdate(
+    await this.notificationModel.findOneAndUpdate(
       {
         userId: userId,
-        "notifications": { $elemMatch: { "type": type, "notification.senderName": senderName } }
+        "notifications": { $elemMatch: { "type": type, "senderName": senderName } }
       },
       {
-        $inc: { "notifications.$.notification.messageCount": 1 }
-      },
-      { new: true }
+        $inc: { "notifications.$.messageCount": 1 }
+      }
     );
+    return this.notificationModel.find({ userId: userId });
+  }
+
+  async removeMessageNotifications(userId): Promise<any> {
+    await this.notificationModel.findOneAndUpdate(
+      {
+        userId: userId
+      },
+      {
+        $pull: { "notifications": { "type": "message" } }
+      }
+    );
+    return this.notificationModel.find({ userId: userId });
   }
 }

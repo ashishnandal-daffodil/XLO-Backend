@@ -178,12 +178,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     //Create a notifications variable which will contain all the user notifications till now
     let notifications = {};
     if (socket.data.user["_id"] == buyer_id) {
-      notifications = await this.handleNotification(seller_id, messageData, buyerDetails.name);
+      notifications = await this.handleNotification(seller_id, messageData, buyerDetails.name, roomId);
     }
     if (socket.data.user["_id"] == seller_id) {
-      notifications = await this.handleNotification(buyer_id, messageData, sellerDetails.name);
+      notifications = await this.handleNotification(buyer_id, messageData, sellerDetails.name, roomId);
     }
-    
+
     if (buyerSocketId) {
       //If buyer is online, send message to him
       await this.server.to(buyerSocketId).emit("message", messageData);
@@ -228,7 +228,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  async handleNotification(userId, messageData, senderName) {
+  async handleNotification(userId, messageData, senderName, roomId) {
     //Find if there is an existing notification for the given user from a given sender
     let existingNotification = await this.notificationsService.findNotification(userId, "message", senderName);
 
@@ -237,7 +237,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return await this.notificationsService.updateNotification(userId, "message", senderName);
     } else {
       //If there is no existing notification, then create a new notification for the user
-      return await this.notificationsService.createMessageNotification(userId, messageData, senderName);
+      return await this.notificationsService.createMessageNotification(userId, messageData, senderName, roomId);
     }
   }
 }
