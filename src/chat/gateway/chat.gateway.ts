@@ -48,7 +48,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           user_id: user._id,
           socket_id: socket.id
         });
-        // await this.getConnectedSocketIdsOfUserRooms(user._id);
         let allConnectedUsers = await this.socketConnectionService.getAllConnectedUsers();
         //emit all online users to everyone
         this.server.emit("isOnline", allConnectedUsers);
@@ -58,31 +57,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return this.disconnect(socket);
     }
   }
-
-  // async getConnectedSocketIdsOfUserRooms(userId) {
-  //   let myAllRooms = await this.roomService.getAllMyRooms(userId);
-  //   let connectedUserIds = await myAllRooms.map(room => {
-  //     if (room.buyer_id == userId) {
-  //       return room.seller_id;
-  //     }
-  //     if (room.seller_id == userId) {
-  //       return room.buyer_id;
-  //     }
-  //   });
-  //   let connectedSocketIds = connectedUserIds.map(async userId => {
-  //     let socketConnection = await this.socketConnectionService.findConnectedUser(userId);
-  //     console.log(
-  //       "🚀 ~ file: chat.gateway.ts ~ line 66 ~ ChatGateway ~ connectedSocketIds ~ socketConnection",
-  //       socketConnection
-  //     );
-  //     // return socketConnection.socket_id;
-  //   });
-  //   console.log(
-  //     "🚀 ~ file: chat.gateway.ts ~ line 80 ~ ChatGateway ~ getConnectedSocketIdsOfUserRooms ~ connectedSocketIds",
-  //     connectedSocketIds
-  //   );
-  //   return connectedSocketIds;
-  // }
 
   async handleDisconnect(socket: Socket) {
     //remove connection from socketConnection
@@ -110,7 +84,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage("getOnlineUsers")
   async getOnlineUsers(socket: Socket) {
     let allConnectedUsers = await this.socketConnectionService.getAllConnectedUsers();
-    this.server.to(socket).emit("allConnectedUsers", allConnectedUsers);
+    this.server.to(socket.id).emit("allConnectedUsers", allConnectedUsers);
   }
 
   @SubscribeMessage("createRoom")
