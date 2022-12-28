@@ -1,5 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
+import { type } from "os";
 
 export type UserDocument = User & Document;
 
@@ -22,6 +23,12 @@ export class User {
 
   @Prop()
   password: string;
+
+  @Prop({ type: Object })
+  reset_password_token: {
+    token: string;
+    created_on: Date;
+  };
 
   @Prop()
   created_on: Date;

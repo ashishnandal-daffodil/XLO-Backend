@@ -66,7 +66,7 @@ export class Product {
 const ProductSchema = SchemaFactory.createForClass(Product);
 
 ProductSchema.index(
-  { title: "text", category: "text", location: "text" },
+  { title: "text", category: "text", subcategory: "text", location: "text" },
   { collation: { locale: "en", strength: 2 } }
 );
 

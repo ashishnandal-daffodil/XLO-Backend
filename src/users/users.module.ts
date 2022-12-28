@@ -7,6 +7,8 @@ import {
   UserConnection,
   UserConnectionSchema,
 } from 'src/schemas/userConnection.schema';
+import { MailService } from 'src/services/mail/mail.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -14,8 +16,9 @@ import {
     MongooseModule.forFeature([
       { name: UserConnection.name, schema: UserConnectionSchema },
     ]),
+    ConfigModule
   ],
-  providers: [UsersService],
+  providers: [UsersService, MailService],
   exports: [UsersService],
   controllers: [UsersController],
 })

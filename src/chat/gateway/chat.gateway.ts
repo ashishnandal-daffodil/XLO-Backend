@@ -45,7 +45,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         socket.data.user = user;
         //Insert the connected socketId and corresponding userId
         await this.socketConnectionService.addConnectedUser({
-          user_id: user._id,
+          user_id: user['_id'],
           socket_id: socket.id
         });
         let allConnectedUsers = await this.socketConnectionService.getAllConnectedUsers();

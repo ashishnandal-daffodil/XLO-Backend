@@ -22,6 +22,10 @@ import { v4 as uuidv4 } from "uuid";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Observable, of, tap } from "rxjs";
 import { Image } from "./image.interface";
+import { MailService } from "src/services/mail/mail.service";
+import { ConfigService } from "@nestjs/config";
+import * as bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
 
 export const storage = {
   storage: diskStorage({
@@ -36,7 +40,11 @@ export const storage = {
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private mailService: MailService,
+    private configService: ConfigService
+  ) {}
 
   // POST /login
   @UseGuards(LocalAuthGuard)
@@ -53,6 +61,34 @@ export class UsersController {
   @Get("getDetails")
   getUserData(@Query() { userId }) {
     return this.usersService.getUserDataById(userId);
+  }
+
+  @Get("forgotPassword")
+  async getPasswordChangeLink(@Query() { registeredEmailAddress, passwordChangeLink }) {
+    let resetPasswordToken = randomUUID();
+    let newPasswordChangeLink = `${passwordChangeLink}?token=${resetPasswordToken}`;
+    await this.usersService.insertResetPasswordToken(registeredEmailAddress, resetPasswordToken);
+    return await this.mailService.sendMail(
+      { receiver: registeredEmailAddress, resetPasswordLink: newPasswordChangeLink },
+      "forgotPassword"
+    );
+  }
+
+  @Get("verifyResetPasswordToken")
+  async verifyResetPasswordToken(@Query() { resetPasswordToken }) {
+    let user = await this.usersService.verifyResetPasswordToken(resetPasswordToken);
+    return user;
+  }
+
+  @Put("removeResetPasswordToken")
+  async removeResetPasswordToken(@Body() { resetPasswordToken }) {
+    let user = await this.usersService.removeResetPasswordToken(resetPasswordToken);
+    return user;
+  }
+
+  @Put("changePassword")
+  changePassword(@Body() { registeredEmailAddress, newPassword }) {
+    return this.usersService.changePassword(registeredEmailAddress, newPassword);
   }
 
   @Post("upload")

@@ -7,13 +7,14 @@ import { Product as Product_Def, ProductDocument } from "../schemas/product.sche
 import { CategoryService } from "src/categories/categories.service";
 import { ObjectID } from "typeorm";
 import { unlink } from "fs";
+import { SearchService } from "src/search/search.service";
 
 @Injectable()
 export class ProductsService {
   collation = { locale: "en", strength: 2 };
   constructor(
     @InjectModel(Product_Def.name) private productModel: Model<ProductDocument>,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
   ) {}
 
   async create(ProductData): Promise<any> {

@@ -23,6 +23,7 @@ import { v4 as uuidv4 } from "uuid";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { Observable, of, tap } from "rxjs";
 import { join } from "path";
+import { SearchService } from "src/search/search.service";
 
 export const storage = {
   storage: diskStorage({
@@ -37,7 +38,7 @@ export const storage = {
 
 @Controller("products")
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(private readonly productsService: ProductsService, private searchService: SearchService) {}
 
   @Post("upload")
   @UseInterceptors(FilesInterceptor("photos", 5, storage))
@@ -48,11 +49,27 @@ export class ProductsController {
     body.photos = filenames;
     body.created_on = new Date();
     body.updated_on = new Date();
-    return this.productsService.create(body);
+
+    //Insert data in DB
+    let insertedProduct = await this.productsService.create(body);
+
+    //Insert data in product index of elasticsearch for searching purpose
+    let productData = {
+      "id": insertedProduct[0]._id,
+      "title": body.title,
+      "category": body.category,
+      "subcategory": body.subcategory,
+      "location": body.location,
+      "price": body.price
+    };
+    await this.searchService.indexProduct(productData);
+
+    return insertedProduct;
   }
 
   @Put("delete")
   async delete(@Body() body: any) {
+    await this.searchService.deleteIndexedProduct(body.productId);
     return this.productsService.delete(body.productId, body.productImages);
   }
 
@@ -70,6 +87,7 @@ export class ProductsController {
     }
     body.changes = JSON.parse(body.changes);
     body.changes.updated_on = new Date();
+    await this.searchService.updateIndexedProduct(body);
     return this.productsService.update(body);
   }
 
@@ -110,11 +128,25 @@ export class ProductsController {
 
   @Get("suggestions")
   async getSuggestions(@Query() { filterKey }) {
-    return this.productsService.findSuggestions(filterKey);
+    return this.searchService.searchIndexedProduct(filterKey);
+    // return this.productsService.findSuggestions(filterKey);
   }
 
   @Get(":id")
   async findOne(@Param("id") id: string) {
-    return this.productsService.findOne(id);
+    let product = await this.productsService.findOne(id);
+
+    //Insert data in product index of elasticsearch for searching purpose
+    // let productData = {
+    //   "id": product._id,
+    //   "title": product.title,
+    //   "category": product.category,
+    //   "subcategory": product.subcategory,
+    //   "location": product.location,
+    //   "price": product.price
+    // };
+    // await this.searchService.indexProduct(productData);
+
+    return product;
   }
 }
