@@ -23,10 +23,8 @@ export class MailService {
 
   async sendMail(data, type) {
     let apiKey = await this.configService.get("SENDGRID_API_KEY");
-    apiKey = apiKey.slice(2, -2);
     sgmail.setApiKey(apiKey);
     let verifiedSenderMail = await this.configService.get("SENDGRID_VERIFIED_SENDER_MAIL");
-    verifiedSenderMail = verifiedSenderMail.slice(2, -2);
     let mailData = await this.generateMail(data, type);
     const msg = {
       to: data.receiver,
